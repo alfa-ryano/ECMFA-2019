@@ -354,6 +354,8 @@ The construction of the \textsf{elementTree} that we have just explained follows
 
 The Alg. \ref{alg:element_tree} presents a more detailed procedure of the steps presented in Fig. \ref{fig:tree_construction}. Basically, it iterates through all a model's change events and uses the information contained in the change events to construct its partial state. The selection of side which side, left or right change events, that is executed first depends on the \textsf{Side} enumeration value -- \textsf{left} or \textsf{right} -- passed through the parameter \textsf{side} (the second input parameter). The algorithm also receives an input of the change events \textsf{events} that are to be iterated and the element tree \textsf{elementTree} that has been instantiated before, and then return the \textsf{elementTree} as output after updating it.
 
+For each \textsf{event} in the \textsf{events}, we collect information needed to build up the \textsf{elementTree}  (lines 3-9), such as \textsf{targetElement}, \textsf{feature}, \textsf{value}, \textsf{previousValue}, \textsf{position}, and \textsf{previousPosition}. The \textsf{targetElement} is the element modified by a change event (e.g. \textsf{x} and \textsf{d} in List. \ref{lst:leftcbp}). This \textsf{targetElement} -- an instance of class Element in Fig. \ref{fig:approach_class_diagram} -- is retrieved from the \textsf{elementTree} if it already exists. Otherwise, a new one is created and added to the \textsf{elementTree} (line 3). In this step also we set the flags \textsf{*IsCreated} and \textsf{*IsDeleted} of the element in Fig. \ref{fig:approach_class_diagram}. For example, if the type of the event is \textsf{create} then \textsf{*IsCreated} is set to \textsf{true}. The \textsf{feature} -- an instance of class Feature in Fig. \ref{fig:approach_class_diagram} -- represents the target element's feature (e.g. \textsf{name} and \textsf{operations} in List. \ref{lst:leftcbp}) modified by a change event. It is  retrieved from the \textsf{targetElement}'s feature list, and a new one is created and added to the \textsf{targetElement}'s feature list if it has not existed yet (line 5). 
+
 \IncMargin{1.5em}
 \begin{algorithm}[H]
     \begin{footnotesize}
@@ -398,16 +400,11 @@ The Alg. \ref{alg:element_tree} presents a more detailed procedure of the steps 
 \end{algorithm}
 \DecMargin{1.5em}
 
-For each \textsf{event} in the \textsf{events}, we collect information needed to build up the \textsf{elementTree}  (lines 3-9), such as \textsf{targetElement}, \textsf{feature}, \textsf{value}, \textsf{previousValue}, \textsf{position}, and \textsf{previousPosition}. The \textsf{targetElement} is the element modified by a change event (e.g. \textsf{x} and \textsf{d} in List. \ref{lst:leftcbp}). This \textsf{targetElement} -- an instance of class Element in Fig. \ref{fig:approach_class_diagram} -- is retrieved from the \textsf{elementTree} if it already exists. Otherwise, a new one is created and added to the \textsf{elementTree} (line 3). In this step also we set the flags \textsf{*IsCreated} and \textsf{*IsDeleted} of the element in Fig. \ref{fig:approach_class_diagram}. For example, if the type of the event is \textsf{create} then \textsf{*IsCreated} is set to \textsf{true}. The \textsf{feature} -- an instance of class Feature in Fig. \ref{fig:approach_class_diagram} -- represents the target element's feature (e.g. \textsf{name} and \textsf{operations} in List. \ref{lst:leftcbp}) modified by a change event. It is  retrieved from the \textsf{targetElement}'s feature list, and a new one is created and added to the \textsf{targetElement}'s feature list if it has not existed yet (line 5). 
-
 The \textsf{value} is the value assigned to the feature in a change event (line 5, Alg. \ref{alg:element_tree}). The \textsf{value} can be the type of \textsf{Element} (e.g. elements \textsf{b} and  \textsf{d}, lines 17-18, List. \ref{lst:leftcbp}) or primitive (e.g. the String ``MathLib'' at line 14 in the List. \ref{lst:leftcbp}). The \textsf{previousValue} is similar to the \textsf{value} except that it represents the previous value of the modified feature (line 6, Alg. \ref{alg:element_tree}). The \textsf{previousValue} is not defined if there is no previous value has been assigned. If the type of \textsf{value} and \textsf{previousValue} is \textsf{Element}, the elements that they represent are retrieved from the \textsf{elementTree} otherwise new instances are created if they are contained yet in the \textsf{elementTree}. Not every change event has \textsf{value}, particularly event with type \textsf{add} or \textsf{delete} as it only modifies a target element not the element's feature.
 
 The \textsf{position} is the position assigned by a change event to a value in a feature, while \textsf{previousPosition} is the previous position of the value (lines 7-8, Alg. \ref{alg:element_tree}). In one change event, we can get both \textsf{position} and \textsf{previousPosition} or only one of them depends on the type of the change event. For example, we can only obtain that the \textsf{position} of \textsf{d} is 1 (line 17 in in the List. \ref{lst:leftcbp}) as the change event type is \textsf{add}. In \textsf{remove} change event, we can only get the \textsf{previousPosition} of \textsf{b}, that is 2 (line 17 in in the List. \ref{lst:leftcbp}), as the element does not exist anymore in the left model. We can obtain both of them only in a \textsf{move} change event as an element is moved from a previous position to a new one (line 14 in in the List. \ref{lst:rightcbp}). For a single-valued feature, the \textsf{position} and \textsf{previousPosition} are always 0 as the feature can only contain a value. 
 
 At line 9, we retrieve the \textsf{featureEventList} from the \textsf{feature} to be added later with the current \textsf{event} (line 19). The \textsf{featureEventList} is a list -- a history -- of change events that have been processed that are specific to the \textsf{feature} on the selected \textsf{side}. Using the obtained \textsf{targetElement}, \textsf{feature}, \textsf{value}, and \textsf{position}, the process then updates the state of the \textsf{elementTree} on the selected \textsf{side} (line 10). After that, it calculates back the original position of a value using the \textsf{featureEventList} and \textsf{previousPosition} (line 11). If the value at \textsf{oldPosition} in the \textsf{feature} has not been set, then the algorithm sets the \textsf{feature} with the \textsf{previousValue} at the \textsf{oldPosition} in the partial state of the original model (lines 12-13). At lines 14-18, the algorithm also does the same thing to the opposite side -- if the current \textsf{side} is \textsf{left} then it is \textsf{right}.  
-
-
-
 
 \subsection{Diff Computation}
 \label{sec:diff_computation}
@@ -442,14 +439,17 @@ Using the \textsf{elementTree} presented in Fig. \ref{fig:right_element_tree_dia
 \end{algorithm}
 \DecMargin{1.5em}
 
-
-
 We have implemented many rules in our implementation. However, due to limitation of pages, we only discuss rules that we use to identify differences in the running example, which can be found in Alg. \ref{alg:diff_rules}. The algorithm is the breakdown of the function \textsf{identifyDiffUsingRules} in Alg. \ref{alg:diff_calculation}. As previously stated, it is important to remember that we use the left model as a reference which means the differences are presented as changes that transform the right model to become equal to the left model. 
+
 
 The first rule (Rule 1) in Alg. \ref{alg:diff_rules} is to identify a change of value of a single-valued attribute. To meet this, a feature has be type of attributes, both side values have to be different, and the element should have not been created or deleted in both models. The second rule (Rule 2) is to identify an element is different in location in both models. To satisfy this, the element should has never been deleted and already existed from the the previous version -- the original model. Also, its containers, containing features, or positions of the element have to be different on both sides.
 
 The third rule (Rule 3)  is to identify deletion on an element. If an element in the left model is not created but exists in the model, it means that the element has been there from the previous version -- the original model, which also means the the element also exists in the right model if it has not been deleted and both left and right models share the same previous model. Thus, if the left model is deleted, it means that the element has to be deleted also in the right model in order to make the right model equals to the left model. The fourth rule (Rule 4) is to identify the need of an addition of an element. If an element is created in the left model and has not been deleted, it means that the element should be added also to the right model to make both models equal.
- 
+
+In the running example, during the iteration of the \textsf{elementTree} in Fig. \ref{fig:right_element_tree_diagram}, when the iteration is at feature \textsf{name}, as the type of this feature is a single-valued attribute and both sides of the feature are different in their values, these mean that the condition of the first rule is met. Thus, we can conclude that in order to make the left value of this feature equals to the right value is by overriding the value ``MathUtil'' with ``MathLib''. Therefore, the type of this difference is \textsf{CHANGE}. When the iteration is at position 0 in the element \textsf{x}'s feature \textsf{operations}, we have two values: the \textsf{leftValue} is element \textsf{a}, and the \textsf{rightValue} is element \textsf{b}. The element \textsf{a} it exists on both sides -- all flags \textsf{*Created} and \textsf{*Deleted} are false --, and it also has different position, at 0 in the left state and 2 in the right state. This condition meets the second rule. Thus, we can conclude that in order to make the position of element \textsf{a} in the right model equals its position in the left model, element \textsf{a} should be moved from position 2 to 0. Thus, the type of this difference is \textsf{MOVE}. 
+
+Element \textsf{b} existed but has been deleted from the left model (flags \textsf{leftIsCreated} = false, \textsf{leftIsDeleted} = true) and still exists in the right state (flags \textsf{rightIsCreated} = false, \textsf{rightIsDeleted} = false). This condition satisfy the third rule. Therefore, the element \textsf{b} should be deleted from the right model to make it not existed in that model. Thus, the type of this difference is \textsf{DELETE}. We can get only one value when the iteration is at position 1 in the element \textsf{x}'s feature \textsf{operations}; the \textsf{leftValue} is element \textsf{d}, but the \textsf{rightValue} is unidentified. Thus we only process the \textsf{leftValue}. Element \textsf{d} is only created in the left model (flags \textsf{leftIsCreated} = true, \textsf{leftIsDeleted} = false, \textsf{rightIsCreated} = false, \textsf{rightIsDeleted} = false). This condition meets the fourth rules. Thus, to make element \textsf{d} also exists in right state is by adding it into element \textsf{x}'s feature \textsf{operations} at position 1. Therefore, the type of this difference is \textsf{ADD}. At position 2, the element \textsf{a} is skipped because it has been processed before. 
+
 \IncMargin{1.5em}
 \begin{algorithm}[H]
     \begin{footnotesize}
@@ -487,83 +487,70 @@ The third rule (Rule 3)  is to identify deletion on an element. If an element in
 \end{algorithm}
 \DecMargin{1.5em}
 
-In the running example, during the iteration of the \textsf{elementTree} in Fig. \ref{fig:right_element_tree_diagram}, when the iteration is at feature \textsf{name}, as the type of this feature is a single-valued attribute and both sides of the feature are different in their values, these mean that the condition of the first rule is met. Thus, we can conclude that in order to make the left value of this feature equals to the right value is by overriding the value ``MathUtil'' with ``MathLib''. Therefore, the type of this difference is \textsf{CHANGE}. When the iteration is at position 0 in the element \textsf{x}'s feature \textsf{operations}, we have two values: the \textsf{leftValue} is element \textsf{a}, and the \textsf{rightValue} is element \textsf{b}. The element \textsf{a} it exists on both sides -- all flags \textsf{*Created} and \textsf{*Deleted} are false --, and it also has different position, at 0 in the left state and 2 in the right state. This condition meets the second rule. Thus, we can conclude that in order to make the position of element \textsf{a} in the right model equals its position in the left model, element \textsf{a} should be moved from position 2 to 0. Thus, the type of this difference is \textsf{MOVE}. 
 
-Element \textsf{b} existed but has been deleted from the left model (flags \textsf{leftIsCreated} = false, \textsf{leftIsDeleted} = true) and still exists in the right state (flags \textsf{rightIsCreated} = false, \textsf{rightIsDeleted} = false). This condition satisfy the third rule. Therefore, the element \textsf{b} should be deleted from the right model to make it not existed in that model. Thus, the type of this difference is \textsf{DELETE}. We can get only one value when the iteration is at position 1 in the element \textsf{x}'s feature \textsf{operations}; the \textsf{leftValue} is element \textsf{d}, but the \textsf{rightValue} is unidentified. Thus we only process the \textsf{leftValue}. Element \textsf{d} is only created in the left model (flags \textsf{leftIsCreated} = true, \textsf{leftIsDeleted} = false, \textsf{rightIsCreated} = false, \textsf{rightIsDeleted} = false). This condition meets the fourth rules. Thus, to make element \textsf{d} also exists in right state is by adding it into element \textsf{x}'s feature \textsf{operations} at position 1. Therefore, the type of this difference is \textsf{ADD}. At position 2, the element \textsf{a} is skipped because it has been processed before. 
-
-We express these identified differences as $dc_{n}$ = [$LeftContainer_n$, $RightContainer_n$, $LeftFeature_n$, $RightFeature_n$, $LeftPosition_n$, $RightPosition_n$, $LeftValue_n$, $RightValue_n$, $Kind_n$] similar to its state-based counterpart in the end part of Section \ref{sec:model_comparison}. Thus, $dc_{1}$ =  [\textsf{x}, \textsf{x}, \textsf{name}, \textsf{name}, 0, 0, ``MathLib'', ``Mathutil'', \textsf{CHANGE}], $dc_{2}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, ?, 0, ?, \textsf{b}, \textsf{DELETE}], $dc_{3}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, 1, ?, \textsf{d}, ?, \textsf{ADD}], and $dc_{4}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, 0, 2, \textsf{a}, \textsf{a}, \textsf{MOVE}]. As can be noticed, this change-based approach might produce differences that are different from differences that the state-based approach produces which can be seen between  $ds_{4}$ and $dc_{4}$ ($ds_{4}$ $\neq$ $dc_{4}$). In the state-based approach, the difference is the element \textsf{c} is in different positions while in the change-based approach this difference is attributed to element \textsf{a}. However, for both approaches, if we resolve their differences to make the right model equals to the left model -- executing all-left-to-right merging, the right model becomes equal to the left model. In this way, we can check the correctness of the identified differences produced by the change-based approach.
+Similar to the state-based approach in the end part of Section \ref{sec:model_comparison}, we express these identified differences as $dc_{n}$ = [$LeftContainer_n$, $RightContainer_n$, $LeftFeature_n$, $RightFeature_n$, $LeftPosition_n$, $RightPosition_n$, $LeftValue_n$, $RightValue_n$, $Kind_n$]. Thus, $dc_{1}$ =  [\textsf{x}, \textsf{x}, \textsf{name}, \textsf{name}, 0, 0, ``MathLib'', ``Mathutil'', \textsf{CHANGE}], $dc_{2}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, ?, 0, ?, \textsf{b}, \textsf{DELETE}], $dc_{3}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, 1, ?, \textsf{d}, ?, \textsf{ADD}], and $dc_{4}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, 0, 2, \textsf{a}, \textsf{a}, \textsf{MOVE}]. As can be noticed, this change-based approach might produce differences that are different from differences that the state-based approach produces which can be seen between  $ds_{4}$ and $dc_{4}$ ($ds_{4}$ $\neq$ $dc_{4}$). In the state-based approach, the difference is the element \textsf{c} is in different positions while in the change-based approach this difference is attributed to element \textsf{a}. However, for both approaches, if we resolve their differences to make the right model equals to the left model -- executing all-left-to-right merging, the right model becomes equal to the left model. In this way, we can check the correctness of the identified differences produced by the change-based approach.
 
 \section{Evaluation Method}
 \label{sec:evaluation}
 
-In order to evaluate the performance of the change-based approach in comparing models, we have evaluated it against the traditional state-based approach as the benchmark. We choose EMF Compare \cite{emfcompare2018developer,eclipse2017compare} as the tool to perform the state-based comparison since it is a common tool to compare EMF-based models. Since we could not find any existing large models persisted in change-based format to be used as the dataset for our experiments, we reverse-engineered a large model -- it confirms the Java metamodel \cite{eclipse2018modiscojava} -- from the Epsilon project \cite{eclipse2018epsilongit,eclipse2017epsilon}. The model consists of more than 1.6 million elements with a size of 224 MBs persisted in XMI format. 
+In order to evaluate the performance of the change-based approach in comparing models, we have evaluated it against the traditional state-based approach as the benchmark. We choose EMF Compare \cite{emfcompare2018developer,eclipse2017compare} as the tool to perform the state-based comparison since it is a common tool to compare EMF-based models. Since we could not find any existing large models persisted in change-based format to be used as the dataset for our experiments, we reverse-engineered a large model from the Epsilon project \cite{eclipse2018epsilongit,eclipse2017epsilon}. The model conforms to the Java metamodel \cite{eclipse2018modiscojava} and consists of more than 1.6 million elements with a size of 224 MBs persisted in XMI format. 
 
-We cloned the original model to produce two new -- left and right -- models and perform random changes -- random operations (e.g. add, remove, move, set) with random elements, features, positions, and values -- to both models to create differences between them. Since we wanted the change of total elements did not affect our measurement, the probabilities of executing \textit{add} and \textit{remove} operations were made equal. Thus, the total number of elements can be kept constant, and the modification can still include both operations. We made 1.1 million changes to each model which generated more than 1.1 million events (one operation can generate more than one event, e.g. a \textit{move} between features generates \textit{remove} and \textit{add} events). Events generated by the changes were persisted in change-based format (to be used later in change-based model comparison). After every 50 thousand changes, we also persisted the last state of the models in state-based format (to be used later in state-based model comparison) and then performed the change-based and state-based model comparison and measured their comparison time and memory footprint, thus produced 22 records of measurement. 
+We cloned the original model to produce two new left and right -- models and perform operations (\textsf{add}, \textsf{remove}, \textsf{move}, \textsf{set} with random elements, features, positions, and values -- on both models to create differences between them. We made 1.1 million changes to each model which generated more than 1.1 million events (one operation can generate more than one event, e.g. a \textsf{move} between features generates \textsf{remove} and \textsf{add} events). Events generated by the changes were persisted in change-based format (to be used later in change-based model comparison). After every 50 thousand changes, we also persisted the last state of the models in state-based format (to be used later in state-based model comparison) and then performed the change-based and state-based model comparison and measured their comparison time and memory footprint, thus produced 22 records in one batch of measurement. 
+
+We performed 5 batches of measurement. In the first batch, the ratio of occurrence between \textsf{add}, \textsf{remove}, \textsf{move}, and \textsf{set} operations is set to 1:1:20:40 intuitively in assumption that in a mature model modification (\textsf{move} and \textsf{set}) occurs more frequent than addition and deletion. The probabilities of \textsf{add} and \textsf{remove} operations were made equal since we also wanted the change of total elements did not affect our measurement. Therefore, the total number of elements can be kept constant, and the modification can still include both operations. In the rest batches, we only performed one type of operations -- isolated from other types -- per batch. Thus, we produced 5 result groups: mixed, add-only, remove-only, move-only, and set-only groups.
+
+For the change-based approach, the comparison time is the duration required for loading change events, constructing element tree, and identifying differences, and the memory footprint is the space used to hold the change events, element tree, and differences in memory. For the state-based approach, the comparison time is the time span required for matching elements and identifying differences, and the memory footprint is the space required to hold the matches and differences in memory.
 
 Since the change-based and state-based approaches can produce different differences, in order to evaluate the correctness of the change-based approach, we reconciled all the differences by performing all-left-to-right merging -- making the right model identical to the left model -- based on the identified differences. If the all-left-to-right merging of change-based approach produces a model that is identical to the model produced by the all-left-to-right merging of the state-based approach then it can be said that differences identified by the change-based approach are correct. We performed this correctness checking at every time the measurement mentioned above was executed.
 
-\section{Result and Discussion}
-\label{sec:discussion}
 
-Fig. \ref{fig:modification_model_size} depicts the modification course stated in Section \ref{sec:evaluation}. The increase of events correlates positively to the number of affected elements and differences. As the number of events inclines, the probability of changes that modify already-affected elements or features also gets higher. Thus, some changes might not contribute to the addition of new affected elements or differences -- more changes are required to add or create new elements or differences. In consequence, both grow in a logarithmic manner as can be seen in Fig. \ref{fig:modification_course}. As designed in Section \ref{sec:evaluation}, the number of total elements of both models is almost constant. The total of elements of both models does change but in the order of hundreds (in contrast, both models have more than 3.2 million in total). Fig. \ref{fig:model_size} depicts the zoom-in view of the total elements in Fig. \ref{fig:modification_course}.
-
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[t]{0.495\linewidth}
-        \includegraphics[width=\linewidth]{ModificationCourse}
-        \caption{total elements, affected elements, and diffs}
-        \label{fig:modification_course}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.495\linewidth}
-        \includegraphics[width=\linewidth]{ModelSize}
-        \caption{zoom-in view of total elements in Fig. \ref{fig:modification_course}}
-        \label{fig:model_size}
-    \end{subfigure}
-    \caption{Changes on models along the artificial modification.}
-    \label{fig:modification_model_size}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[t]{0.495\linewidth}
-        \includegraphics[width=\linewidth]{Time-Diffs}
+\begin{wrapfigure}[]{r}{0.5\textwidth}
+    \vspace{-35pt}
+    \includegraphics[width=\linewidth]{mixed-count-events}
+    \caption{total elements, affected elements, and diffs}
+    \label{fig:modification_course}
+    \begin{subfigure}[t]{\linewidth}
+        \includegraphics[width=\linewidth]{mixed-time-events}
         \caption{execution time}
         \label{fig:time_diffs}
     \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.495\linewidth}
-        \includegraphics[width=\linewidth]{Memory-Diffs}
+    \begin{subfigure}[t]{\linewidth}
+        \includegraphics[width=\linewidth]{mixed-memory-events}
         \caption{memory footprint}
         \label{fig:memory_diffs}
     \end{subfigure}
     \caption{Change-based vs. state-based model comparison as differences increase.}
     \label{fig:change_vs_state}
-\end{figure}
+\end{wrapfigure}
 
-Figures \ref{fig:time_diffs} and \ref{fig:memory_diffs} show the execution time and memory footprint of the change-based and state-based comparison to contrast their performance. We can notice that the change-based comparison outperforms the state-based comparison regarding of execution time. The change-based approach only requires 5 seconds compared to the state-based approach that takes 66 seconds to identify around 90,000 differences (see the first circles). However, as the number of differences grows -- which also indicates increase on events, a growing number of events also have to loaded also into memory for the construction of the element three thus slows down the comparison. Fig. \ref{fig:time_changediff_detail} breaks down the comparison time in detail. It exhibits that the event loading time is the dominant contributor to the slowdown compared to the element tree's construction time and diffing time -- the diffing time is the weakest contributor. 
+\section{Result and Discussion}
+\label{sec:discussion}
+
+Fig. \ref{fig:modification_course} depicts the modification course stated in Section \ref{sec:evaluation} for the first batch. The increase of events correlates positively to the number of affected elements and differences. As the number of events grows, the probability of these events modify elements that already affected also increases. Thus, some events might not contribute to the addition of new affected elements and differences. Thus, more events are required to increase the number of affected elements or differences. In consequence, both grow in a logarithmic manner as can be seen in Fig. \ref{fig:modification_course}. 
+
+Figures \ref{fig:time_diffs} and \ref{fig:memory_diffs} show the execution time and memory footprint of the change-based and state-based comparison to contrast their performance. We can notice that the change-based comparison outperforms the state-based comparison regarding of execution time. After around 0.1 million events, the change-based approach only requires 5 seconds compared to the state-based approach that takes 66 seconds to identify around 90,000 differences (see the first record in Tables \ref{fig:modification_course} and \ref{fig:time_diffs}). However, if modification keeps continue, a growing number of events also have to loaded also into memory for the construction of the element three thus it slows down the comparison. Nevertheless, even though at the moment the number of events reaches 2.37 millions (more than 1 million differences at that time), the comparison in change-based approach is still faster than its state-based counterpart. Fig. \ref{fig:time_changediff_detail} breaks down the comparison time in detail. It exhibits that the event loading time is the dominant contributor to the slowdown compared to the element tree's construction time and diffing time. 
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[t]{0.495\linewidth}
-        \includegraphics[width=\linewidth]{Time-ChangeDiff-Detail}
+        \includegraphics[width=\linewidth]{mixed-time-events-detail}
         \caption{change-based execution time}
         \label{fig:time_changediff_detail}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.495\linewidth}
-        \includegraphics[width=\linewidth]{Time-StateDiff-Detail}
+        \includegraphics[width=\linewidth]{state-time-events-detail}
         \caption{state-based execution time}
         \label{fig:time_statediff_detail}
     \end{subfigure}
     \begin{subfigure}[t]{0.495\linewidth}
-        \includegraphics[width=\linewidth]{Memory-ChangeDiff-Detail}
+        \includegraphics[width=\linewidth]{mixed-memory-events-detail}
         \caption{change-based memory footprint}
         \label{fig:memory_changediff_detail}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.495\linewidth}
-        \includegraphics[width=\linewidth]{Memory-StateDiff-Detail}
+        \includegraphics[width=\linewidth]{state-memory-events-detail}
         \caption{state-based memory footprint}
         \label{fig:memory_statediff_detail}
     \end{subfigure}
@@ -571,17 +558,78 @@ Figures \ref{fig:time_diffs} and \ref{fig:memory_diffs} show the execution time 
     \label{fig:time_memory_detail}
 \end{figure}
 
-For the state-based comparison in Fig. \ref{fig:time_statediff_detail}, the comparison time only experiences a slight increase as the number of identified differences inclines. This slight increase is contributed mainly by the state-based diffing time while matching time tends to only contribute constantly due to the very small changes of the total elements (Figures \ref{fig:modification_course}, \ref{fig:model_size}).
+For the state-based comparison in Fig. \ref{fig:time_statediff_detail}, the comparison time only experiences a slight increase as the number of identified differences also inclines. This slight increase is contributed mainly by the diffing time, while the matching time tends to be constant due to the very small increase of the total elements (Figures \ref{fig:modification_course}).
 
-Nevertheless, the change-based comparison also comes with a drawback on memory footprint since it consumes more space than the state-based comparison does (see Figure \ref{fig:memory_diffs}). Fig. \ref{fig:memory_changediff_detail} breaks down the memory footprint of the change-based comparison into three factors: the loaded change events, element tree, and diffs. As the number of differences grows, a great deal of events is generated. These events have to be loaded into memory since the information that they contain are important for the construction of the element tree. The memory used for these events grows exponentially against the number of differences since as the events increase some of these events do not contribute to the addition of new differences their memory space still needs to be retained. In our evaluation, the element tree occupies most of the memory footprint since it mimics the partial states -- elements and features -- of the models that are affected by the changes. In our technical implementation, a feature can have many instances -- one instance for each element (As a comparison, in the EMF implementation, there is only one instance for a feature. The feature is used as a key so that different elements can have the same feature that maps to different values simultaneously). This contributes to the large memory footprint used by the element three. The identified change-based diffs, the third factor, are the smallest factor that contributes to the memory footprint of the change-based comparison. 
+Nevertheless, the change-based comparison also comes with a drawback on memory footprint since it consumes more space than the state-based comparison does (see Figure \ref{fig:memory_diffs}). The change-based comparison only consumes less memory than its state-based counterpart when the number of events is less than 0.3 millions (around less than 0.25 million identified differences at that moment). Fig. \ref{fig:memory_changediff_detail} breaks down the memory footprint of the change-based comparison into three factors: the loaded change events, element tree, and diffs. As modification continues, a great deal of events is generated. These events have to be loaded into memory since the information that they contain are important for the construction of the element tree. The amount of space to keep these change events in memory grows linearly according to their number. 
 
-For the state-based comparison in Fig. \ref{fig:memory_statediff_detail}, the memory footprint only inclines slightly along the increase of differences. A large part of the memory footprint is used to represent the identified differences, while the memory used for matches tends to be constant as the changes of the total elements are very small -- less new elements means less memory needs to be allocated for new matches (Figures \ref{fig:modification_course}, \ref{fig:model_size}). 
+In contrast, the memory used for the element tree grows in logarithmic pattern. As the events increase, the probability of the events modifies elements that already affected also increases. Thus, no additional memory allocation not required for the element tree. We can also notice that the element tree occupies most of the memory footprint since it mimics the partial states -- elements, features, and values -- of the models that are affected by the changes. Moreover, in our technical implementation, a feature can have many instances -- one instance for each element (As a comparison, in the EMF implementation, there is only one instance for a feature. The feature is used as a key so that different elements can have the same feature that maps to different values simultaneously). This contributes to the large memory footprint used by the element three. The identified change-based diffs, the third factor, are the smallest factor that contributes to the memory footprint of the change-based comparison. 
 
-Based on the findings, we argue that the change-based comparison approach works at its best for large models that have been modified in a moderate number of changes. Models that have been excessively modified could impair the performance of change-based comparison as a great deal of change records have to be read and loaded into memory. 
+For the state-based comparison in Fig. \ref{fig:memory_statediff_detail}, the memory footprint only inclines slightly along the increase of differences. A large part of the memory footprint is used to represent the identified differences, while the memory used for matches tends to be constant as the changes of the total elements are very small -- less new elements means less memory needs to be allocated for new matches (Figures \ref{fig:modification_course}). 
+
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[t]{0.495\linewidth}
+        \includegraphics[width=\linewidth]{add-time-events}
+        \caption{add-only}
+        \label{fig:add-time-events}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.495\linewidth}
+        \includegraphics[width=\linewidth]{delete-time-events}
+        \caption{delete-only}
+        \label{fig:delete-time-events}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.495\linewidth}
+        \includegraphics[width=\linewidth]{move-time-events}
+        \caption{move-only}
+        \label{fig:move-time-events}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.495\linewidth}
+        \includegraphics[width=\linewidth]{change-time-events}
+        \caption{change-only}
+        \label{fig:change-time-events}
+    \end{subfigure}
+    \caption{Comparison time for homogeneous operations.}
+    \label{fig:operation_time_events}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[t]{0.495\linewidth}
+        \includegraphics[width=\linewidth]{add-memory-events}
+        \caption{add-only}
+        \label{fig:add-memory-events}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.495\linewidth}
+        \includegraphics[width=\linewidth]{delete-memory-events}
+        \caption{delete-only}
+        \label{fig:delete-memory-events}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.495\linewidth}
+        \includegraphics[width=\linewidth]{move-memory-events}
+        \caption{move-only}
+        \label{fig:move-memory-events}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.495\linewidth}
+        \includegraphics[width=\linewidth]{change-memory-events}
+        \caption{change-only}
+        \label{fig:change-memory-events}
+    \end{subfigure}
+    \caption{Memory footprint for homogeneous operations.}
+    \label{fig:operation_memory_events}
+\end{figure}
+
+Figures \ref{fig:operation_time_events} and \ref{fig:operation_memory_events} exhibit the comparison time and memory footprint of models that have been modified using homogeneous operations -- \textsf{add}, \textsf{remove}, \textsf{move}, or \textsf{set} only. We can notice that in all figures change-based comparison outperforms its state-based counterpart particularly when the number of change events is small to moderate. If modification keeps continue, there is a point when the number of events is in great amount that the change-based comparison is slower than the state-based comparison. In our evaluation, it is when the number of events is greater than 4 million events (Fig. \ref{fig:add-time-events}). A slower change-based comparison -- if compared to state-based comparison -- also happens when the size of models is shrinking as depicted in Fig. \ref{fig:delete-memory-events} as the change-based comparison keeps still needs to load number of change events and construct its element tree. In terms of memory footprint, change-based comparison only performs better than state-based comparison when the number of change events is less than 0.3 millions as depicted in Fig. \ref{fig:operation_memory_events}.
+
+Based on the findings, we argue that the change-based comparison approach works at its best for large models that have been modified in a moderate number of changes. Models that have been excessively modified and experience significant reduction on model size could impair the performance of change-based comparison as a great deal of change records have to be read and loaded into memory. 
 
 \subsection{Limitation and Threat to Validity}
 \label{sec:limitation_and_Threat_to_validity}
-The proposed change-based comparison comes with a limitation that it heavily relies on the use of identifiers to efficiently address modified elements. Applying change-based persistent to models that use URI fragments as element's identifiers face a challenge that an element's identifier is always changing when it is moved to another location in a model. The evaluation of the proposed change-based comparison is limited to the Java metamodel only. Thus, there is no guarantee it will always work on models with different metamodels. Although, we have tried to cover as much as common changes made in EMF models (e.g. performing \textit{add}/\textit{remove}/\textit{set}/\textit{move} operations on \textit{single}/\textit{multi}-\textit{valued} features, \textit{attribute}/\textit{reference} features, or \textit{containment}/\textit{non}-\textit{containment} references), the random modification made in the evaluation does not largely reflect the evolution of models in the real world. This is challenging as different domains can have their own patterns of model evolution -- different problems, metamodels, modellers, etc.
+The proposed change-based comparison comes with a limitation that it heavily relies on the use of identifiers to efficiently address modified elements. Applying change-based persistent to models that use URI fragments as element's identifiers face a challenge that an element's identifier is always changing when it is moved to another location in a model. The evaluation of the proposed change-based comparison is limited to the Java metamodel only. Thus, there is no guarantee it will always work on models with different metamodels. Although, we have tried to cover as much as common changes made in EMF models (e.g. performing \textsf{add}/\textsf{remove}/\textsf{set}/\textsf{move} operations on \textsf{single}/\textsf{multi}-\textsf{valued} features, \textsf{attribute}/\textsf{reference} features, or \textsf{containment}/\textsf{non}-\textsf{containment} references), the random modification made in the evaluation does not largely reflect the evolution of models in the real world. This is challenging as different domains can have their own patterns of model evolution -- different problems, metamodels, modellers, etc.
 
 \section{Related Work}
 \label{sec:related_work}
