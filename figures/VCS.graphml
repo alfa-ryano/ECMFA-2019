@@ -17,7 +17,7 @@
     <node id="n0">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.bpmn.Artifact">
-          <y:Geometry height="18.647999999999996" width="11.86690909090909" x="-115.03508096591067" y="46.30522616577136"/>
+          <y:Geometry height="18.647999999999996" width="11.86690909090909" x="-99.0393221999284" y="23.151626165771376"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="62.8046875" horizontalTextPosition="center" iconTextGap="4" modelName="sides" modelPosition="w" textColor="#000000" verticalTextPosition="bottom" visible="true" width="49.369140625" x="-53.369140624999986" y="-22.078343750000002">(3)
@@ -60,6 +60,7 @@ changes</y:NodeLabel>
           <y:Geometry height="53.24563217163086" width="65.0260009765625" x="-78.16121310901931" y="46.30522616577136"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="30.51300048828125" y="24.62281608581543"/>
           <y:SVGNodeProperties usingVisualBounds="true"/>
           <y:SVGModel svgBoundsPolicy="0">
             <y:SVGContent refid="2"/>
@@ -73,6 +74,7 @@ changes</y:NodeLabel>
           <y:Geometry height="53.24563217163086" width="65.0260009765625" x="255.87373378196136" y="49.121542770385645"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="30.51300048828128" y="24.62281608581543"/>
           <y:SVGNodeProperties usingVisualBounds="true"/>
           <y:SVGModel svgBoundsPolicy="0">
             <y:SVGContent refid="2"/>
@@ -173,7 +175,6 @@ changes</y:NodeLabel>
       </data>
     </node>
     <node id="n9">
-      <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="18.647999999999996" width="30.0" x="-60.648212620738065" y="7.059867647058923"/>
@@ -191,7 +192,6 @@ changes</y:NodeLabel>
       </data>
     </node>
     <node id="n10">
-      <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="18.647999999999996" width="30.0" x="273.38673427024264" y="7.059867647058923"/>
@@ -208,11 +208,31 @@ changes</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
+    <node id="n11">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.bpmn.Artifact">
+          <y:Geometry height="18.647999999999996" width="11.86690909090909" x="-99.03932219992839" y="91.02853529411786"/>
+          <y:Fill hasColor="false" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="62.8046875" horizontalTextPosition="center" iconTextGap="4" modelName="sides" modelPosition="w" textColor="#000000" verticalTextPosition="bottom" visible="true" width="75.35546875" x="-79.35546875" y="-22.078343750000016">(7) compare, 
+resolve 
+conflicts,
+merge</y:NodeLabel>
+          <y:StyleProperties>
+            <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.line.color" value="#000000"/>
+            <y:Property class="com.yworks.yfiles.bpmn.view.DataObjectTypeEnum" name="com.yworks.bpmn.dataObjectType" value="DATA_OBJECT_TYPE_PLAIN"/>
+            <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.fill2" value="#d4d4d4cc"/>
+            <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.fill" value="#ffffffe6"/>
+            <y:Property class="com.yworks.yfiles.bpmn.view.BPMNTypeEnum" name="com.yworks.bpmn.type" value="ARTIFACT_TYPE_DATA_OBJECT"/>
+          </y:StyleProperties>
+        </y:GenericNode>
+      </data>
+    </node>
     <edge id="e0" source="n2" target="n2">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="-84.04821262073807" y="36.306410079955924"/>
+          <y:Path sx="0.0" sy="0.0" tx="3.7469160776577013" ty="-26.629673539643292">
+            <y:Point x="-45.648212620738065" y="28.114410079955917"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -268,6 +288,42 @@ changes</y:NodeLabel>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e6" source="n2" target="n2">
+      <data key="d10">
+        <y:ArcEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
+            <y:Point x="-45.64821243286133" y="72.92803955078125"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:Arc height="0.0" ratio="1.0" type="fixedRatio"/>
+        </y:ArcEdge>
+      </data>
+    </edge>
+    <edge id="e7" source="n2" target="n2">
+      <data key="d10">
+        <y:ArcEdge>
+          <y:Path sx="0.0" sy="0.0" tx="4.175412620738086" ty="-8.548042251586793">
+            <y:Point x="-45.69751739501953" y="67.61016845703125"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:Arc height="2.3783278465270996" ratio="1.0" type="fixedRatio"/>
+        </y:ArcEdge>
+      </data>
+    </edge>
+    <edge id="e8" source="n2" target="n2">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="0.0" tx="18.496846703432443" ty="23.12647179815052">
+            <y:Point x="-48.92501262073807" y="122.73201007995596"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="standard" target="none"/>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
       </data>
