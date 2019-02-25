@@ -165,58 +165,58 @@ CBP is an alternative approach to state-based persistence (SBP) of models. Inste
 
 \vspace{-15pt}
 \begin{minipage}[t]{0.61\linewidth} 
-    \centering
-    \begin{lstlisting}[style=eol,caption={The simplified XMI of the model in Fig. \ref{fig:origin}.},label=lst:originxmi]
-    <uml:Class id="x" name="Math">
-    <operation id="a" name="abs"/>
-    <operation id="b" name="mean"/>
-    <operation id="c" name="pow"/>
-    </uml:Class>
-    \end{lstlisting}
-    \vspace{-10pt}
-    \begin{figure}[H]
-        \centering    
-        \hfill
-        \begin{subfigure}[t]{0.2\linewidth}
-            \centering
-            \includegraphics[width=\linewidth]{OriginalClassDiagram}
-            \caption{origin}
-            \label{fig:origin}
-        \end{subfigure}
-        \hfill
-        \begin{subfigure}[t]{0.2\linewidth}
-            \centering
-            \includegraphics[width=\linewidth]{LeftClassDiagram}
-            \caption{left}
-            \label{fig:left}
-        \end{subfigure}
-        \hfill
-        \begin{subfigure}[t]{0.2\linewidth}
-            \centering
-            \includegraphics[width=\linewidth]{RightClassDiagram}
-            \caption{right}
-            \label{fig:right}
-        \end{subfigure}
-        \hfill
-        \label{fig:versions}
-        \caption{Different versions of a model.}
-    \end{figure}
+\centering
+\begin{lstlisting}[style=eol,caption={The simplified XMI of the model in Fig. \ref{fig:origin}.},label=lst:originxmi]
+<uml:Class id="x" name="Math">
+<operation id="a" name="abs"/>
+<operation id="b" name="mean"/>
+<operation id="c" name="pow"/>
+</uml:Class>
+\end{lstlisting}
+\vspace{-10pt}
+\begin{figure}[H]
+    \centering    
+    \hfill
+    \begin{subfigure}[t]{0.2\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{OriginalClassDiagram}
+        \caption{origin}
+        \label{fig:origin}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.2\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{LeftClassDiagram}
+        \caption{left}
+        \label{fig:left}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.2\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{RightClassDiagram}
+        \caption{right}
+        \label{fig:right}
+    \end{subfigure}
+    \hfill
+    \label{fig:versions}
+    \caption{Different versions of a model.}
+\end{figure}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.37\linewidth}
-    \begin{lstlisting}[style=eol,numbersep=0.6pt,caption={The pseudo-formatted CBP of the model in Fig. \ref{fig:origin}.},label=lst:origincbp]
-    create x type Class
-    set x.name to "Math" 
-    create a type Operation
-    set a.name to "abs" 
-    create b type Operation
-    set b.name to "mean" 
-    create c type Operation
-    set c.name to "pow" 
-    add a to x.operations at 0
-    add b to x.operations at 1
-    add c to x.operations at 2
-    \end{lstlisting}
+\begin{lstlisting}[style=eol,numbersep=0.6pt,caption={The pseudo-formatted CBP of the model in Fig. \ref{fig:origin}.},label=lst:origincbp]
+create x type Class
+set x.name to "Math" 
+create a type Operation
+set a.name to "abs" 
+create b type Operation
+set b.name to "mean" 
+create c type Operation
+set c.name to "pow" 
+add a to x.operations at 0
+add b to x.operations at 1
+add c to x.operations at 2
+\end{lstlisting}
 \end{minipage}
 
 \vspace{-5pt}
@@ -253,23 +253,23 @@ Differences between the matched elements and all their features is usually done 
 
 \vspace{-10pt}
 \begin{minipage}[t]{0.49\linewidth} 
-    \begin{lstlisting}[style=eol,caption={The simplified XMI of the left model in Fig. \ref{fig:left}.},label=lst:leftxmi]
-    <uml:Class id="x" name="MathLib">
-    <operation id="a" name="abs/>
-    <operation id="d" name="sqrt"/>
-    <operation id="c" name="pow"/>
-    </uml:Class>
-    \end{lstlisting}
+\begin{lstlisting}[style=eol,caption={The simplified XMI of the left model in Fig. \ref{fig:left}.},label=lst:leftxmi]
+<uml:Class id="x" name="MathLib">
+  <operation id="a" name="abs/>
+  <operation id="d" name="sqrt"/>
+  <operation id="c" name="pow"/>
+</uml:Class>
+\end{lstlisting}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.49\linewidth}
-    \begin{lstlisting}[style=eol,caption={The simplified XMI of the right model in Fig. \ref{fig:right}.},label=lst:rightxmi]
-    <uml:Class id="x" name="MathUtil">
-    <operation id="b" name="mean"/>
-    <operation id="c" name="pow"/>
-    <operation id="a" name="abs"/>
-    </uml:Class>
-    \end{lstlisting}
+\begin{lstlisting}[style=eol,caption={The simplified XMI of the right model in Fig. \ref{fig:right}.},label=lst:rightxmi]
+<uml:Class id="x" name="MathUtil">
+  <operation id="b" name="mean"/>
+  <operation id="c" name="pow"/>
+  <operation id="a" name="abs"/>
+</uml:Class>
+\end{lstlisting}
 \end{minipage}
 
 In our example, the matching process in state-based comparison iterates through all the elements of both models and matches them using their identifiers. The matching process yields 3 matches: $m_1$ = (\textsf{x}, \textsf{x}), $m_2$ = (\textsf{a}, \textsf{a}), and $m_3$ = (\textsf{c}, \textsf{c}), and 2 unmatched elements, $um_1$ = (\textsf{d},) and $um_2$ = (, \textsf{b}). The diffing process then iterates through all the matches and unmatches and use an LCS algorithm to identify their differences. In the first match, it identifies that both elements \textsf{x} are different in their \textsf{name} and \textsf{operations} features. 
@@ -321,14 +321,15 @@ In CBP, the the comparison has three phases: event loading, element tree constru
 Further, the comparison is not done over all the elements of the model.
 Instead, we only need to compare the last set of changes from the source and reference model.
 The last set of changes can be easily identified by finding their last common change.
+A simplified class diagram of our approach's implementation\footnote{The source can be found at \url{https://github.com/epsilonlabs/emf-cbp}.} is depicted in Fig. \ref{fig:approach_class_diagram}. 
 Next, we describe the three phases in detail.
-%These phases are represented as methods \textsf{loadEvents}, \textsf{contructElementTree}, and \textsf{computeDifferences} methods in class \textsf{CBPComparison} in Fig. \ref{fig:approach_class_diagram}. 
 
-%\begin{figure}
-%    \includegraphics[width=\linewidth]{TreeClassDiagram}
-%    \caption{A class diagram showing the core components of the change-based approach to speed up model comparison.}
-%    \label{fig:approach_class_diagram}
-%\end{figure}
+\begin{figure}
+    \includegraphics[width=\linewidth]{TreeClassDiagram}
+    \caption{A class diagram showing the core components of the change-based approach to speed up model comparison.}
+    \label{fig:approach_class_diagram}
+\end{figure}
+
 
 \subsection{Event Loading}
 \label{sec:event_loading}
