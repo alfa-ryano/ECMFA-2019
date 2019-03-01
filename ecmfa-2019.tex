@@ -94,7 +94,7 @@
 \definecolor{gray2}{gray}{0.95}
 
 %%% Article metadata
-\title{Harnessing Change-based Persistence to Optimise Model Comparison}
+\title{Towards Efficient Comparison of Change-Based Models}
 \runningtitle{Harnessing Change-based Persistence to Optimise Model Comparison}
 
 \author[affiliation={york,kalbis}, nowrap, photo=avatar]
@@ -125,11 +125,11 @@
     license=ccbynd % choose from ccby, ccbynd, ccbyncnd
 }
 
+\newcommand{\dk}[1]{\textcolor{blue}{\textbf{[Dimitris: #1]}}}
 
 \begin{document}
 \renewcommand{\thelstlisting}{\arabic{lstlisting}}
 \renewcommand{\labelitemi}{$\bullet$}
-\newcommand{\dk}[1]{\textbf{[DK: #1]}}
 \newcommand{\And}{\textnormal{\textbf{and }}}
 \newcommand{\Is}{\textnormal{\textbf{is }}}
 \newcommand{\Not}{\textnormal{\textbf{not }}}
@@ -137,7 +137,7 @@
 \newcommand{\Or}{\textnormal{\textbf{or }}}
 
 \begin{abstract}
-Comparison of large models can be time-consuming since every element has to be visited, matched, and compared with its respective element in other models. This can result in bottlenecks in collaborative modelling environments, where identifying differences between two versions of a model is desirable. Reducing the comparison process to only the elements that have been modified since a previous known state (e.g. previous version) could significantly reduce the time required for large model comparison. This paper presents how change-based persistence can be used to localise the comparison of models so that only elements affected by recent changes are compared. This approach leads to a faster model differencing as opposed to the traditional state-based model comparison. 
+Comparison of large models can be time-consuming since every element has to be visited, matched, and compared with its respective element in other models. This can result in bottlenecks in collaborative modelling environments, where identifying differences between two versions of a model is desirable. Reducing the comparison process to only the elements that have been modified since a previous known state (e.g. previous version) could significantly reduce the time required for large model comparison. This paper presents how change-based persistence can be used to localise the comparison of models so that only elements affected by recent changes are compared and to substantially reduce differencing time compared to state-based model comparison. 
 \end{abstract}
 
 \keywords{Model Comparison; Change-based Persistence; State-based Persistence.}
@@ -152,16 +152,16 @@ In modelling and model management, it is common to find that many versions or va
 
 In our previous work \cite{DBLP:conf/models/YohannisKP17,yohannis2018towards,DBLP:conf/models/YohannisRPK18}, we proposed change-based persistence (CBP) as an alternative approach to persist EMF models \cite{steinberg2008emf} in change-based format. Instead of persisting models as snapshots (state-based) CBP persists models as a complete list of history of changes. Additionally to showing some of the benefits of CBP over state-based we argued that the incremental, detailed information contained used in CBP could be exploited to support model comparison, incremental model transformation, and model analytics.
 
-In this paper, we present our approach in harnessing CBP to achieve faster model comparison in the context of EMF. The nature of CBP facilitates the identification of elements that have been modified since the previous known state. The availability of this information eliminates the necessity to visit, match, and diff every element of models being compared. Thus, we can localise model comparison only to recently affected elements which in turns reduces the time used for model comparison.
+In this paper, we present our approach in harnessing CBP to achieve faster model comparison in the context of EMF. The nature of CBP facilitates the identification of elements that have been modified since the previous known state. The availability of this information eliminates the necessity to visit, match, and diff every element of models being compared. Thus, we can localise model comparison only to recently affected elements which in turn reduces the time used for model comparison.
 
-This paper is structured as follows. Section \ref{sec:change-based_persistence} introduces the concept of change-based persistence. Sections \ref{sec:model_comparison} overviews of the state-based approach to compare models. Section \ref{sec:change_based_approach_for_comparing_models} presents our change-based approach to speed up model comparison and its implementation. Section \ref{sec:evaluation} presents our experimental results and evaluation. Section \ref{sec:related_work} provides an overview of related work, and Section \ref{sec:conclusion_and_future_work} concludes with a discussion on directions for future work.
+This paper is structured as follows. Section \ref{sec:change-based_persistence} provides an overview of our previous work on change-based model persistence. Section \ref{sec:model_comparison} discusses state-based model comparison. Section \ref{sec:change_based_approach_for_comparing_models} presents our change-based approach to speed up model comparison and its implementation. Section \ref{sec:evaluation} \dk{Consolidate sections 5 and 6?} reports on the results of evaluation experiments used to evaluate the proposed approach. Section \ref{sec:related_work} provides an overview of related work, and Section \ref{sec:conclusion_and_future_work} concludes with a discussion on directions for future work.
 
 \vspace{-10pt}
 \section{Change-based Persistence}
 \label{sec:change-based_persistence}
 
 \vspace{-5pt}
-CBP is an alternative approach to state-based persistence (SBP) of models. Instead of persisting the last state of a model as a snapshot of the whole model, CBP persists the overall history of changes of a model \cite{yohannis2018towards}. For example, in SBP approach, when we save the UML class diagram in Fig. \ref{fig:origin} in standard XMI format, we only obtain the last state of the model as the List. \ref{lst:originxmi} shows. In contrast, when we develop the model in CBP approach, a system captures all the changes of the model and persists them into a CBP file as shown in List. \ref{lst:origincbp}\footnote{In implementation, the CBP is persisted in XML-like format, not in pseudo-format.}. The file consists of events generated by changes. Each change event contains information about the type of the operation applied as well the as values, elements, or features involved. Replaying the change events in List. \ref{lst:origincbp} produces the eventual model as in Fig. \ref{fig:origin}.
+CBP is an alternative approach to state-based persistence (SBP) of models. Instead of persisting snapshots of the state of a model -- which is the default behaviour of frameworks such as EMF -- CBP persists the entire history of changes of a model \cite{yohannis2018towards}. For example, in SBP approach, when we save the UML class diagram in Fig. \ref{fig:origin} in standard XMI format, we only obtain the last state of the model as the List. \ref{lst:originxmi} shows. In contrast, when we develop the model in CBP approach, a system captures all the changes of the model and persists them into a CBP file as shown in List. \ref{lst:origincbp}\footnote{In our implementation, the change-based format is XML-based.}. The file consists of events generated by changes. Each change event contains information about the type of the operation applied as well the as values, elements, or features involved. Replaying the change events in List. \ref{lst:origincbp} produces the eventual model as in Fig. \ref{fig:origin}.
 
 \vspace{-15pt}
 \begin{minipage}[t]{0.61\linewidth} 
@@ -224,7 +224,7 @@ add c to x.operations at 2
 \label{sec:model_comparison}
 
 \vspace{-5pt}
-In a collaborative modelling setting, a model is commonly developed in parallel -- thus produces different versions.
+In a collaborative modelling setting, a model is commonly developed in parallel -- thus produces different versions \dk{Mutliple versions can exist even if a model is developed by a single developer}.
 Consider the case where an initial version of a model exists in Version Control System (VCS) server (Fig. \ref{fig:vcs}).
 Two modellers, Bob and Alice, checkout the original model (steps 1 and 2) to their local machines and modify it (steps 3 and 4).
 Alice then commits her work (original + Alice's changes) to the VCS.
@@ -243,13 +243,13 @@ After that, he can push it back to the VCS server.
 
 
 In a SBP setting, Bob produces the model in Fig. \ref{fig:left} (the left model), and Alice the model in Fig. \ref{fig:right} (the right model) producing XMI files as shown in List. \ref{lst:leftxmi} and List. \ref{lst:rightxmi} respectively.
-When Bob is doing the merge process he must compare the right model with the left model.
-In state-based comparison, the common approach to compare models consists of two processes: \emph{matching} and \emph{diffing}.
-The matching process is to establish matches between the elements of both models, that is determine the elements in the left model that correspond to the elements in the right model.
+Before Bob can merge, he must compare the right model with the left model.
+In state-based comparison, comparing models commonly consists of two steps: \emph{matching} and \emph{diffing}.
+The matching process establishes matches between the elements of both models -- that is, it determines the elements in the left model that correspond to elements in the right model.
 Generally, the matching process iterates through all the elements of the models being compared and matches them by their identifiers or through a similarity mechanism if they have none \cite{DBLP:conf/sfm/BroschKLSWW12,emfcompare2018developer}.
-Note that for new and deleted elements the result of the match can be that there is no match.
+%Note that for new and deleted elements the result of the match can be that there is no match.
 The diffing process identifies differences between the matched elements \cite{DBLP:conf/sfm/BroschKLSWW12,emfcompare2018developer}.
-Differences between the matched elements and all their features is usually done using the Longest Common Subsequence (LCS) algorithms, e.g. \cite{DBLP:journals/algorithmica/Meyers86}.
+Differences between the matched elements and all their features is usually done using a Longest Common Subsequence (LCS) algorithm, e.g. \cite{DBLP:journals/algorithmica/Meyers86}.
 
 \vspace{-10pt}
 \begin{minipage}[t]{0.49\linewidth} 
@@ -272,14 +272,14 @@ Differences between the matched elements and all their features is usually done 
 \end{lstlisting}
 \end{minipage}
 
-In our example, the matching process in state-based comparison iterates through all the elements of both models and matches them using their identifiers. The matching process yields 3 matches: $m_1$ = (\textsf{x}, \textsf{x}), $m_2$ = (\textsf{a}, \textsf{a}), and $m_3$ = (\textsf{c}, \textsf{c}), and 2 unmatched elements, $um_1$ = (\textsf{d},) and $um_2$ = (, \textsf{b}). The diffing process then iterates through all the matches and unmatches and use an LCS algorithm to identify their differences. In the first match, it identifies that both elements \textsf{x} are different in their \textsf{name} and \textsf{operations} features. 
+In our example, the matching process in state-based comparison iterates through all the elements of both models and matches them using their identifiers \dk{Are we describing the behaviour of EMFCompare here?}. The matching process yields 3 matches: $m_1$ = (\textsf{x}, \textsf{x}), $m_2$ = (\textsf{a}, \textsf{a}), and $m_3$ = (\textsf{c}, \textsf{c}), and 2 unmatched elements, $um_1$ = (\textsf{d}, -) and $um_2$ = (-, \textsf{b}). The diffing process then iterates through all the matches and unmatched elements and uses an LCS algorithm to identify their differences. In the first match, it identifies that both elements \textsf{x} are different in their \textsf{name} and \textsf{operations} features. 
 The left \textsf{x}'s \textsf{name} is ``MathLib'' while the other \textsf{x}'s \textsf{name} is ``MathUtil'' (diff $ds_1$). The \textsf{operations} features are different in their contents -- the left \textsf{operations} feature does not contain element \textsf{b} (diff $ds_2$), the left \textsf{operations} feature contains element \textsf{d} 
 that does not exist in the right \textsf{operations} (diff $ds_3$), and the positions of element \textsf{c} that are different in both features (diff $ds_4$).
 
-Differences are commonly expressed as a list of changes that must be applied to a source model so that it is made equal to a reference model.
+Differences are commonly expressed as a list of changes that must be applied to a source model so that it is made equal to a reference model \dk{We should probably consider different terminology here as the terms ``source'' and ``reference'' are very similar}.
 Similar to EMF Compare \cite{emfcompare2018developer}, this paper treats the left model as a reference model and the right model as the source model.
 Which means that differences are expressed as changes applied to he right model so that it equals the left model.
-To express differences, we used the following terms: \textsf{LeftContainer}, \textsf{RightContainer}, \textsf{LeftFeature}, \textsf{RightFeature} \textsf{LeftPosition}, \textsf{RightPosition}, \textsf{LeftValue}, \textsf{RightValue}, and \textsf{Kind}. The \textsf{*Container}, \textsf{*Feature}, and \textsf{*Value} are the target element, feature, and value involved in a difference (\textsf{*} symbol can be replaced \textsf{Left} and {Right}). \textsf{*Position} is the index of a value in a feature. \textit{Kind} is the type of difference. It can be one of these types: \textsf{CHANGE}, \textsf{ADD}, \textsf{DELETE}, and \textsf{MOVE}. \textsf{CHANGE} means a pair of features -- single-valued attributes or non-containment references -- have different values. \textsf{ADD} indicates that a value does not exist in the right model thus it requires the addition of the value. \textsf{DELETE} is the counterpart of \textsf{ADD}. \textsf{MOVE} indicates that matched elements are different in their positions, containing features, or containers. 
+To express differences, we used the following terms: \textsf{LeftContainer}, \textsf{RightContainer}, \textsf{LeftFeature}, \textsf{RightFeature} \textsf{LeftPosition}, \textsf{RightPosition}, \textsf{LeftValue}, \textsf{RightValue}, and \textsf{Kind}. The \textsf{*Container}, \textsf{*Feature}, and \textsf{*Value} are the target element, feature, and value involved in a difference (\textsf{*} symbol can be replaced with \textsf{Left} and {Right}). \textsf{*Position} is the index of a value in a feature. \textit{Kind} is the type of difference. It can be one of these types: \textsf{CHANGE}, \textsf{ADD}, \textsf{DELETE}, and \textsf{MOVE}. \textsf{CHANGE} means a pair of features -- single-valued attributes or non-containment references \dk{Why is containment important?} -- have different values. \textsf{ADD} indicates that a value does not exist in the right model thus it requires the addition of the value. \textsf{DELETE} is the counterpart \dk{``opposite''?} of \textsf{ADD}. \textsf{MOVE} indicates that matched elements differ in terms of their positions, containing features, or containers. 
 
 Based on these definitions, we can express the result of the diffing process as: $ds_{n}$ = [$LeftContainer_n$, $RightContainer_n$, $LeftFeature_n$, $RightFeature_n$, $LeftPosition_n$, $RightPosition_n$, $LeftValue_n$, $RightValue_n$, $Kind_n$]. Thus, $ds_{1}$ =  [\textsf{x}, \textsf{x}, \textsf{name}, \textsf{name}, 0, 0, ``MathLib'', ``Mathutil'', \textsf{CHANGE}], $ds_{2}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, null, 0, null, \textsf{b}, \textsf{DELETE}], $ds_{3}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, 1, null, \textsf{d}, null, \textsf{ADD}], and $ds_{4}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, 2, 1, \textsf{c}, \textsf{c}, \textsf{MOVE}]. We can use these information to represent the differences visually as depicted in Fig. \ref{fig:xmi_comparison}. Applying these differences as changes to the right model will transform it into the left model.  
 
