@@ -329,9 +329,8 @@ set x.name from "Math" to "MathUtil"
 
 %Since both modellers work using CBP, we can exploit the representation to improve the previous model comparison.
 %For example, we do not need to visit, match, and differentiate both \textsf{c} elements in the running example as they are not affected by the recent changes in both CBPs; only the affected features by the recent changes to be compared -- not all features. 
-In CBP, the the comparison has three phases: event loading, element tree construction, and diff computation.
-Further, the comparison is not done over all the elements of the model.
-Instead, we only need to compare the last set of changes from the source and reference model.
+In CBP, comparison has three phases: event loading, element tree construction, and diff computation.
+Further, comparison is not performed over all the elements of the model; instead, we only need to compare the last set of changes from the source and reference model.
 The last set of changes can be easily identified by finding their last common change.
 A simplified class diagram of our approach's implementation\footnote{The source can be found at \url{https://github.com/epsilonlabs/emf-cbp}.} is depicted in Fig. \ref{fig:approach_class_diagram}. 
 Next, we describe the three phases in detail.
@@ -349,15 +348,18 @@ In the event loading phase, our implementation loads change events recorded in t
 The most important aspect of this phase is the partial loading as only lines starting from the position where the two files are different are loaded.
 Thus, not the whole model needs to be traversed and loaded.
 In this case, lines 1-11 in List. \ref{lst:origincbp} are skipped.
+
 Only lines starting from line 12 in Listings \ref{lst:leftcbp} and \ref{lst:rightcbp} are loaded, yielding two partial -- left and right -- change-event models. 
 
 \subsection{Element Tree}
 \label{sec:tree_construction}
 An element tree is a representation of the changes of model elements in the source and reference models.
 It contains detailed information about elements and their properties.
+
 It contains similar information to that captured in change lists in SBP, but also provides more information about the changes.
 For example, the element tree can keep track of a feature's old value and element/value's indexes inside multi-valued properties. 
 %The latter reduces false-positives when detecting MOVE changes. 
+
 %These specific features are useful to determine differences in the diff computation phase (Section \ref{sec:diff_computation}).
 The element tree only contains the partial states -- not whole -- of affected elements of original, left, and right models as depicted in Figures \ref{fig:left_element_tree_diagram} and \ref{fig:right_element_tree_diagram}.
 

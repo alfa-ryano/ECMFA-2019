@@ -255,7 +255,6 @@ TSWLatexianTemp*
 *.sta
 
 # additional
-ecmfa-2019.pdf
 pdf/*
 pdf/jot-manual.pdf
 ecmfa-2019*.pdf
