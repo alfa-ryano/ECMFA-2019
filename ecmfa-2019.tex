@@ -290,7 +290,8 @@ To express differences, we use the following terms: \textsf{LeftContainer}, \tex
 %features -- single-valued attributes or non-containment references \dk{Why is containment important?} -- 
 have different values. \textsf{ADD} indicates that a value does not exist in the right model thus it requires the addition of the value. \textsf{DELETE} is the opposite
 %\dk{``opposite''?} 
-of \textsf{ADD}. \textsf{MOVE} indicates that matched elements differ in terms of their indexes, containing features, or containers. 
+of \textsf{ADD}. \textsf{MOVE} indicates that matched elements differ in terms of their containers, containing features, or indexes.
+A Container is an element that contains a value. A containing feature is a feature owned by a container in which a value is contained. An index is the position of a value in a containing feature.
 
 Based on these definitions, we can express the result of the diffing process as: $ds_{n}$ = [$LeftContainer_n$, $RightContainer_n$, $LeftFeature_n$, $RightFeature_n$, $LeftIndex_n$, $RightIndex_n$, $LeftValue_n$, $RightValue_n$, $Kind_n$]. Thus, $ds_{1}$ =  [\textsf{x}, \textsf{x}, \textsf{name}, \textsf{name}, 0, 0, ``MathLib'', ``Mathutil'', \textsf{CHANGE}], $ds_{2}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, null, 0, null, \textsf{b}, \textsf{DELETE}], $ds_{3}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, 1, null, \textsf{d}, null, \textsf{ADD}], and $ds_{4}$ = [\textsf{x}, \textsf{x}, \textsf{operations}, \textsf{operations}, 2, 1, \textsf{c}, \textsf{c}, \textsf{MOVE}]. We can use these information to represent the differences visually as depicted in Fig. \ref{fig:xmi_comparison}. Applying these differences as changes to the right model will transform it into the left model.  
 
@@ -549,7 +550,7 @@ We cloned the original model to produce two new left and right -- models and per
 
 We performed 5 batches of measurement. In the first batch, the ratio of occurrence between \textsf{add}, \textsf{remove}, \textsf{move}, and \textsf{set} operations is set to 1:1:20:40 intuitively in assumption that in a mature model modification -- \textsf{move} and \textsf{set} -- occurs more frequent than addition and deletion. Since we wanted the change of total elements did not affect our measurement, the number of total elements should be kept constant. For example, it is difficult to tell an increase of time in comparison is caused by an increase in number of elements or number of change events. One way to do this was by not executing \textsf{add} and \textsf{remove} operations. However, excluding both operations made measurement less representative. Thus, we still included both operations but made their probabilities equal so that the number of total elements can be constant. To support the result of the first batch, in the rest of the batches, we only performed homogeneous type operations -- isolated from other types -- per batch (e.g. add-only, move-only operations). In the end, we obtained 5 results of the batches: mixed, add-only, remove-only, move-only, and set-only measurement results.
 
-For the change-based approach, the comparison time is the duration required for loading change events, constructing an element tree, and identifying differences. The memory footprint is the space used to hold the change events, element tree, and differences in memory. For the state-based approach, the comparison time is the time span required for matching elements and identifying differences, and the memory footprint is the space required to hold the matches and differences in memory.
+For the change-based approach, the comparison time is the duration required for loading change events, constructing an element tree, and identifying differences. The memory footprint is the space used to hold the change events, element tree, and differences in memory. For the state-based approach, the comparison time is the time span required for matching elements and identifying differences, and the memory footprint is the space required to hold the matches and differences in memory. All measurements were performed on the same machine.
 
 Since the change-based and state-based approaches can produce different differences, in order to evaluate the correctness of the change-based approach, we reconciled all the differences by performing all-left-to-right merging -- making the right model identical to the left model -- based on the identified differences. If the all-left-to-right merging of change-based approach produces a model that is identical to the model produced by the all-left-to-right merging of the state-based approach then it can be said that differences identified by the change-based approach are correct. We performed this correctness checking at every measurement point.
 
@@ -575,26 +576,27 @@ Since the change-based and state-based approaches can produce different differen
 \vspace{-5pt}
 \subsection{Result and Discussion}
 \label{sec:discussion}
-In this section, we report our evaluation on comparison time and memory footprint of the mixed and homogeneous type operation measurement. 
+In this section, we report our evaluation on comparison time and memory footprint of the mixed and homogeneous operation measurement. 
 
 \vspace{-5pt}
-\subsubsection{Mixed-operation Measurement}
+\subsubsection{Mixed Operations}
 \label{sec:mixed-operation}
-Fig. \ref{fig:modification_course} gives us the context during the random, artificial changes in the first batch as stated in Section \ref{sec:evaluation}. It shows the patterns of the number of differences generated, affected elements, and total elements by the changes. We can notice that the number of events correlates positively to the number of affected elements and differences. As the number of events grows, the probability of these events modify elements that already affected also increases. Thus, some events might not contribute to the addition of new affected elements and differences. Thus, more events are required to increase the number of affected elements or differences. In consequence, both grow in a logarithmic manner as can be seen in Fig. \ref{fig:modification_course}. The total elements is constant due to the equal probabilities of addition and deletion as mentioned in Section \ref{sec:evaluation}.
 
-Figures \ref{fig:time_diffs} and \ref{fig:memory_diffs} show the execution time and memory footprint of the change-based and state-based comparison to contrast their performance. The change-based comparison outperforms the state-based comparison in execution time. After around 100,000 events, the change-based approach takes only 5 seconds, compared to the state-based approach that takes 66 seconds to identify around 90,000 differences (see the first record in Figures \ref{fig:modification_course} and \ref{fig:time_diffs}) on the same machine. However, if modification keeps continue, a growing number of events has to be loaded into memory thus it slows down the comparison. Nevertheless, even though at the moment the number of events reaches 2.37 millions (more than 1 million differences at that time), the comparison in change-based approach is still faster than its state-based counterpart. Fig. \ref{fig:time_changediff_detail} breaks down the comparison time in detail. It exhibits that the event loading time is the dominant contributor to the slowdown compared to the element tree's construction time and diffing time. 
+In the mixed operation measurement, we modify two identical models differently by applying random operations. As the number of change events generated by the modification grows, the numbers of affected elements and differences also increase in logarithmic manner. The patterns can seen in Fig. \ref{fig:modification_course}. The growth are logarithmic since the probability that the random operations modify the same elements also increases. Thus, some change events might not contribute to the addition of new affected elements and differences. In other words, more events are required to increase the number of affected elements or differences. In Fig. \ref{fig:modification_course}, the total elements is constant due to the equal probabilities of addition and deletion as has been set in Section \ref{sec:evaluation}. The figure gives us an insight about the characteristics of the modification caused by the random operations in the mixed operation measurement; it supports explaining the implication of the changes on execution time and memory footprints of model comparison.
+
+After applying some random changes on both models, the modification produces 100,000 change events at the first measurement point. Using this amount of events, our change-based comparison only takes 5 seconds to identify around 90,000 differences, in contrast to the state-based comparison that takes 66 seconds (see the first measurement points in Figures \ref{fig:modification_course} and \ref{fig:time_diffs}). If the modification continues, more changes events are generated. This growing number of change events has to be loaded into memory and thus slows down the change-based comparison. Nevertheless, the change-based comparison is still faster than the state-based comparison even though the number of change events reaches 2.37 millions -- more than 1 million differences at that point; the change-based comparison outperforms the state-based comparison in execution time (Figure \ref{fig:time_diffs}). Fig. \ref{fig:time_changediff_detail} breaks down the comparison time in detail. It exhibits that the event loading time is the dominant contributor to the slowdown compared to the element tree's construction time and diffing time. 
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[t]{0.495\linewidth}
         \includegraphics[width=\linewidth]{mixed-time-events-detail}
-        \caption{change-based execution time}
+        \caption{change-based comparison time}
         \label{fig:time_changediff_detail}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.495\linewidth}
         \includegraphics[width=\linewidth]{state-time-events-detail}
-        \caption{state-based execution time}
+        \caption{state-based comparison time}
         \label{fig:time_statediff_detail}
     \end{subfigure}
     \begin{subfigure}[t]{0.495\linewidth}
@@ -608,17 +610,20 @@ Figures \ref{fig:time_diffs} and \ref{fig:memory_diffs} show the execution time 
         \caption{state-based memory footprint}
         \label{fig:memory_statediff_detail}
     \end{subfigure}
-    \caption{Breakdown view of execution time and memory in Figure \ref{fig:change_vs_state}.}
+    \caption{Breakdown view of comparison time and memory footprint in Figure \ref{fig:change_vs_state}.}
     \label{fig:time_memory_detail}
 \end{figure}
 
 For the state-based comparison in Fig. \ref{fig:time_statediff_detail}, the comparison time only experiences a slight increase as the number of identified differences also inclines. This slight increase is contributed mainly by the diffing time, while the matching time tends to be constant due to the very small increase of the total elements (Figures \ref{fig:modification_course}).
 
-Nevertheless, the change-based comparison also comes with a drawback on memory footprint since it consumes more space than the state-based comparison does (see Figure \ref{fig:memory_diffs}). The change-based comparison only consumes less memory than its state-based counterpart when the number of events is less than 0.3 millions (around less than 0.25 million identified differences at that moment). Fig. \ref{fig:memory_changediff_detail} breaks down the memory footprint of the change-based comparison into three factors: the loaded change events, element tree, and diffs. As modification continues, a great deal of events is generated. These events have to be loaded into memory since the information that they contain are important for the construction of the element tree. The amount of space to keep these change events in memory grows linearly according to their number. 
+Nevertheless, the change-based comparison also comes with a drawback on memory footprint since it consumes more space than the state-based comparison does (see Figure \ref{fig:memory_diffs}). The change-based comparison only consumes less memory than its state-based counterpart when the number of events is less than 0.3 millions (around less than 0.25 million identified differences at that moment). Fig. \ref{fig:memory_changediff_detail} breaks down the memory footprint of the change-based comparison into three factors: the loaded change events, element tree, and diffs. As modification continues, an increasing number of events is generated. These events have to be loaded into memory since they contain the required information for the construction of an element tree. The amount of space to keep these change events in memory grows linearly according to their number. 
 
 In contrast, the memory used for the element tree grows in logarithmic pattern. As the number of events increases, the probability of the events modifies elements that already affected also increases. Thus, no additional memory allocation is required for the element tree. We can also notice that the element tree occupies most of the memory footprint since it mimics the partial states -- elements, features, and values -- of the models that are affected by the changes. Moreover, in our technical implementation, a feature can have many instances -- one instance for each element (As a comparison, in the EMF implementation, there is only one instance for a feature. The feature is used as a key so that different elements can have the same feature that maps to different values simultaneously). This contributes to the large memory footprint used by the element three. The identified change-based diffs, the third factor, are the smallest factor that contributes to the memory footprint of the change-based comparison. 
 
 For the state-based comparison in Fig. \ref{fig:memory_statediff_detail}, the memory footprint only inclines slightly along the increase of differences. A large part of the memory footprint is used to represent the identified differences, while the memory used for matches tends to be constant as the changes of the total elements are very small -- less new elements means less memory needs to be allocated for new matches (Figures \ref{fig:modification_course}). 
+
+\subsubsection{Homogeneous Operations}
+\label{sec:homogeneous-operation}
 
 \begin{figure}[ht]
     \centering
@@ -676,12 +681,9 @@ For the state-based comparison in Fig. \ref{fig:memory_statediff_detail}, the me
     \label{fig:operation_memory_events}
 \end{figure}
 
-\subsubsection{Homogeneous-operation Measurement}
-\label{sec:homogeneous-operation}
-
 Figures \ref{fig:operation_time_events} and \ref{fig:operation_memory_events} exhibit the comparison time and memory footprint of models that have been modified using homogeneous operations -- \textsf{add}, \textsf{remove}, \textsf{move}, or \textsf{set} only. We can notice that in all figures change-based comparison outperforms its state-based counterpart particularly when the number of change events is small to moderate. If modification keeps continue, there is a point when the number of events is in great amount that the change-based comparison is slower than the state-based comparison. In our evaluation, it is when the number of events is greater than 4 million events (Fig. \ref{fig:add-time-events}). A slower change-based comparison -- if compared to state-based comparison -- also happens when the size of models is shrinking as depicted in Fig. \ref{fig:delete-memory-events} as the change-based comparison keeps still needs to load number of change events and construct its element tree. In terms of memory footprint, change-based comparison only performs better than state-based comparison when the number of change events is less than 0.3 millions as depicted in Fig. \ref{fig:operation_memory_events}.
 
-Based on the findings, we argue that the change-based comparison approach works at its best for large models that have been modified in a moderate number of changes. Models that have been excessively modified and experience significant reduction on model size could impair the performance of change-based comparison as a great deal of change records have to be read and loaded into memory. 
+Based on the findings, we argue that the change-based comparison approach works at its best for large models that have been modified in a moderate number of changes. Models that have been excessively modified and experience significant reduction on model size could impair the performance of change-based comparison as a great number of change records have to be read and loaded into memory. 
 
 \subsection{Limitation and Validity}
 \label{sec:limitation_and_Threat_to_validity}
