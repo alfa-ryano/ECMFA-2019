@@ -46,38 +46,23 @@
     ==   Overall evaluation
     == below. This field is required.
     -->
-	Summary:
-	The paper proposes an apporach to improve precission of model merging. 
-	The work utilises (1) variability encoding to ensure correctness and (2) model refactoring
-	to improve precission of model merging.
-	(1) The variabilty ecoding works by enriching a merged model with coding 
-	variant/version information to obtain a semantically well-formed encoded merged model.
-	(2) The model refactoring works by applying model refactoring operators
-	to identify and unify similarities between unmatched model elements. 
-	It incrementally refactors the encoded merged model to improve precission while
-	preserving correctness to finally produce an output merged model.
-	
-	Comments:
-	The paper is well organised. The proposed approach is clearly presented
-	and sufficiently evaluated -- it shows clearly the improvement. Some threats to
-	validity and limitations also have been covered in a specific section.
-	
-	Some questions that pop up:
-	- Final merged models can be syntactically and semantically correct and precise.
-	  However, in the human perspective, as the structures of the models changed 
-	  (e.g. the number of classes increases significantly),
-	  to what extent can the changes/merged models be understood by users/modellers?
-	- In Figure 7, the refactoring produces some classes with multiple inheritance. 
-	  How to handle this in case the implementation of the model does not support 
-	  multiple inheritance?
-	- How does the structures of final merged models correlate to other design metrics 
-	  such as coupling, cohesion?
-	
-	Some suggestions to improve readability:
-	- Elaborate what are the 11 (or the 13 and 11) in page 4, the last paragraph, to help readers know how to count the elements. 
-	  The paper still have one page left of the max 20 pages.
-	- Consider using \textsf{} instead of \textit{} or \emp{} on names of attributes, classes, etc. 
-	  Personally, I prefer \textsf{} as it makes a word/symbol stands out from other words/characters.
+
+Summary:
+The paper proposes an approach to improve the precision of model merging. The work utilises (1) variability encoding to ensure the correctness and (2) model refactoring to improve the precision of model merging: (1) The variability encoding works by enriching a merged model with coding variant/version information to obtain a semantically well-formed encoded merged model. (2) The model refactoring works by applying model refactoring operators to identify and unify similarities between unmatched model elements. It incrementally refactors the encoded merged model to improve precision while preserving correctness to produce a final output merged model.
+    
+ Comments:
+ The paper is well organised. The proposed approach is clearly presented and sufficiently evaluated -- it shows clearly the improvement. Some threats to validity and limitations that I concern also have been covered in a section.
+    
+Some questions that pop up:
+- Final merged models can be syntactically and semantically correct and precise. However, in the human perspective, as the structures of the models changed (e.g. the number of classes increases significantly), to what extent are the changes/merged models comprehensible to users/modellers?
+- In Figure 7, the refactoring produces some classes with multiple inheritance. How to handle this in case the implementation of the model does not support multiple inheritances?
+- How do the structures of final merged models correlate to other design metrics such as coupling, cohesion?
+    
+Some suggestions to improve readability:
+- Elaborate what are the 11 (or the 13 and 11) on page 4, the last paragraph, to help readers know how to count the elements. 
+The paper still has one page left of the max 20 pages.
+- Consider using \textsf{} instead of \textit{} or \emp{} on names of attributes, classes, etc. Personally, I prefer \textsf{} as it makes a word/symbol stands out from other words/characters.	
+
   </text>
   <score>
   <!--
@@ -132,7 +117,7 @@
     == and email between the tags below.
     -->
   <first_name>Alfa</first_name>
-  <last_name>yohannis</last_name>
+  <last_name>Yohannis</last_name>
   <email>ary506@york.ac.uk</email>
 </reviewer>
 </review>
