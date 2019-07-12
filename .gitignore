@@ -259,3 +259,4 @@ pdf/*
 pdf/jot-manual.pdf
 ecmfa-2019*.pdf
 /tmp/
+/administration/*
